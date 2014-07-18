@@ -32,5 +32,5 @@ class Twitter
   end
 end
 
-twitter = Twitter.new("jvidalba", "vrpRMB96")
+twitter = Twitter.new("jvidalba", "********")
 p twitter.timeline

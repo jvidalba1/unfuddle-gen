@@ -20,13 +20,13 @@ class Unfuddle
 
   #   :auth => {
   #     :username => "jvidalba",
-  #     :password => "vrpRMB96"
+  #     :password => "********"
   #   }
   # }
 
   # include HTTP
   puts "Before it"
-  auth = {:username => "jvidalba", :password => "vrpRMB96"}
+  auth = {:username => "jvidalba", :password => "*******"}
   response = HTTParty.get("http://yuxipacific.unfuddle.com/api/v1/projects/38254/tickets/358883.xml",
         :basic_auth => auth,
         :connection => "keep-alive",
@@ -34,7 +34,7 @@ class Unfuddle
         :host => "yuxipacific.unfuddle.com",
         "content-type" => "application/xml"
       # :headers => {
-      #               "basic_auth" => "jvidalba:vrpRMB96",
+      #               "basic_auth" => "jvidalba:*******",
       #               'Content-Type' => 'application/xml',
       #               "connection" => "keep-alive",
       #               "host" => "yuxipacific.unfuddle.com",
@@ -50,7 +50,7 @@ unfu = Unfuddle.new
 # u = Unfuddle.new
 
 
-# curl -i -u jvidalba:vrpRMB96 -X GET \
+# curl -i -u jvidalba:******** -X GET \
 #   -H 'Accept: application/json' \
 #   -H 'Content-Type: application/xml' \
 #   -d '<request><start-date>>5/5/2007</start-date><end-date>>5/12/2007</end-date></request>' \
