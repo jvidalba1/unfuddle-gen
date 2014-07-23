@@ -1,6 +1,7 @@
 require 'net/https'
 require 'json'
 require 'highline/import'
+require 'terminal-table'
 
 class Otro
 
@@ -28,12 +29,25 @@ class Otro
   end
 
   def get_projects
-    puts "get_projects..."
-    get_resquest
-  
+    puts "Getting projects... this can take a while..."
+    puts "=========="
+    puts "Choose a project by id in the following table"
+    rows = []
+    ids = []
+    projects = resquest_for_projects
+    projects.each do |project|
+      rows << [project["id"], project["title"]]
+    end
+    table = Terminal::Table.new :headings => ['Id', 'Title'], :rows => rows
+    puts table
+    puts "=========="
   end
 
-  def get_resquest
+  def chose_project
+
+  end
+
+  def resquest_for_projects
 
     # if using ssl, then set it up
     if @settings[:ssl]
@@ -49,18 +63,17 @@ class Otro
       request.basic_auth @settings[:username], @settings[:password]
 
       response = @http.request(request)
-      puts "antes del if"
+      projects = []
       if response.code == "200"
-        array = JSON.parse(response.body)
-        array.each do |project|
-          p project["title"]
-        end
+        projects = JSON.parse(response.body)
+        projects
+      elsif response.code == "401"
+        puts "You are not unauthorized to do this"
       else
-        # hmmm...we must have done something wrong
-        puts "HTTP Status Code: #{response.code}."
+        puts "Error"
       end
     rescue => e
-      # do something smart
+      puts "Sorry, we have a communication error"
     end
 
   end
