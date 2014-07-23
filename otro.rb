@@ -1,5 +1,6 @@
 require 'net/https'
 require 'json'
+require 'highline/import'
 
 class Otro
 
@@ -22,13 +23,17 @@ class Otro
     puts "Hello"
     puts "Please enter your unfuddle username: "
     username = gets.chomp
-    puts "Please enter your password for Unfuddle: "
-    password = gets.chomp
+    password = ask("Enter your password for unfuddle: ") { |q| q.echo = "x" }
     { :username => username, :password => password }
   end
 
   def get_projects
     puts "get_projects..."
+    get_resquest
+  
+  end
+
+  def get_resquest
 
     # if using ssl, then set it up
     if @settings[:ssl]
@@ -57,7 +62,6 @@ class Otro
     rescue => e
       # do something smart
     end
-
 
   end
 
