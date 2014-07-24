@@ -15,9 +15,8 @@ class Otro
                 }
     @http = Net::HTTP.new("#{@settings[:subdomain]}.unfuddle.com", @settings[:ssl] ? 443 : 80)
     get_projects
-    puts "settings..."
-    p @settings
-
+    # puts "settings..."
+    # p @settings
   end
 
   def user_information
@@ -31,7 +30,7 @@ class Otro
   def get_projects
     puts "Getting projects... this can take a while..."
     puts "=========="
-    puts "Choose a project by id in the following table"
+    puts "Choose a project by id showed in the following table"
     rows = []
     ids = []
     projects = resquest_for_projects
@@ -41,6 +40,31 @@ class Otro
     table = Terminal::Table.new :headings => ['Id', 'Title'], :rows => rows
     puts table
     puts "=========="
+    puts "Project id: "
+    @project_id = gets.chomp
+    project_found = false
+
+    projects.each do |project|
+      if project["id"].eql? @project_id.to_i
+        @project_selected = project 
+        project_found = true
+      end
+
+      if not project_found
+        puts table
+        puts "please choose a valid project id: "
+        @project_id = gets.chomp
+      else
+        break
+      end
+    end
+
+    if project_found
+      puts "You selected project #{@project_selected['title']}"    
+    else
+      puts "Sorry, try again"    
+    end  
+    
   end
 
   def chose_project
@@ -64,7 +88,7 @@ class Otro
 
       response = @http.request(request)
       projects = []
-      if response.code == "200"
+      if response.code == "200" 
         projects = JSON.parse(response.body)
         projects
       elsif response.code == "401"
