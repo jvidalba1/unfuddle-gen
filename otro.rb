@@ -61,13 +61,58 @@ class Otro
 
     if project_found
       puts "You selected project #{@project_selected['title']}"    
+      get_tickets
     else
       puts "Sorry, try again"    
     end  
     
   end
 
-  def chose_project
+  def get_tickets  
+    puts "=========="
+    puts "Choose a ticket by id showed in the following table"
+    rows = []
+    ids = []
+    tickets = resquest_for_tickets
+    tickets.each do |ticket|
+      rows << [ticket["id"], ticket["summary"]]
+    end
+    table = Terminal::Table.new :headings => ['Id', 'Summary'], :rows => rows
+    puts table
+    puts "=========="
+    puts "Ticket id: "
+    @ticket_id = gets.chomp
+    ticket_found = false
+
+  end
+
+  def resquest_for_tickets
+
+    # if using ssl, then set it up
+    if @settings[:ssl]
+      @http.use_ssl = true
+      @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
+
+    # perform an HTTP GET
+    begin
+      puts "Getting tickets for project #{@project_id} ..."
+      request = Net::HTTP::Get.new("/api/v1/projects/#{@project_id}/tickets.json")
+      request.basic_auth @settings[:username], @settings[:password]
+      
+      response = @http.request(request)
+      tickets = []
+      if response.code == "200" 
+        tickets = JSON.parse(response.body)
+        tickets
+      elsif response.code == "401"
+        puts "You are not unauthorized to do this"
+      else
+        puts "Error"
+      end
+    rescue => e
+      puts "Sorry, we have a communication error"
+    end
 
   end
 
